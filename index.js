@@ -19,7 +19,8 @@ async function run() {
         await client.connect()
         const servicesCollection = client.db('independentServices').collection('services')
         console.log('conncet');
-
+        const orderCollection = client.db('independentServices').collection('orders')
+       
         // Load all data
         app.get('/services', async (req, res) => {
             const query = {}
@@ -41,7 +42,7 @@ async function run() {
             res.send(service)
         })
 
-        // delete service
+        // delete single service
         app.delete('/services/:id', async (req, res) => {
             const query= {_id: ObjectId(req.params.id)}
             const result = await servicesCollection.deleteOne(query)
@@ -52,6 +53,25 @@ async function run() {
             //     console.log("No documents matched the query. Deleted 0 documents.");
             //   }
             
+        })
+
+        // order collection
+        // store order
+        app.post('/order', async(req, res) => {
+            const order = req.body
+            const result = await orderCollection.insertOne(order)
+            res.send(result)
+        })
+
+        // load order
+        app.get('/userorders', async(req, res) => {
+            const email = req.query.email
+            console.log(email);
+            const query = { userEmail: email }
+            const cursor = orderCollection.find(query)
+            const orders = await cursor.toArray()
+            res.send(orders)
+
         })
 
     }
