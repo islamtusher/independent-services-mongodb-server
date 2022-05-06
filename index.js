@@ -18,7 +18,7 @@ function verigyJWT(req, res, next) {
         return res.status(401).send({message: 'unAuthorize access'})
     }
     const token = authHeader.split(' ')[1]
-    // console.log(token);
+    console.log({token});
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
             return res.status(403).send({message: 'Worng Info'})
@@ -41,7 +41,6 @@ async function run() {
             const user = req.body
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' })
             res.send({token})
-            console.log(token);
         })
         // Load all data
         app.get('/services', async (req, res) => {
